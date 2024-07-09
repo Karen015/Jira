@@ -1,12 +1,10 @@
 import React from 'react';
-import { Input, Typography, Button, Divider, Form, notification, Space } from 'antd';
+import { Input, Typography, Button, Divider, Form, notification } from 'antd';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../../../services/firebase/firebase';
+import { auth, setDoc, doc, db } from '../../../../services/firebase/firebase';
 import './index.css';
 
-
 const { Title } = Typography;
-
 class Register extends React.Component {
     constructor() {
         super();
@@ -27,16 +25,25 @@ class Register extends React.Component {
     }
 
     async handleRegister(e) {
-        const { email, password, firstName, lastName } = this.state
+        const { email, password, firstName, lastName, headline } = this.state
+        this.setState({
+            loading: true
+        })
         
-
         try {
             const response = await createUserWithEmailAndPassword(auth, email, password)
+
+            const uid = response.user.uid;
+
+            const createDoc = doc(db, 'registerUsers', uid) 
+            setDoc(createDoc, {
+                firstName, lastName, headline
+            })
+
             console.log(response)
             notification.success({
                 message: 'Success Registration',
                 description: `Welcome dear ${firstName} ${lastName}`
-                
             })
         } catch(error) { 
             notification.error({
@@ -48,16 +55,15 @@ class Register extends React.Component {
                 loading: false
             })
         }
-
     }
     render() {
         return (
-            <div className="auth_register_container">
+            <div className="auth_container">
                 <Title level={2}>
                     Register
                 </Title>
                
-                <Form onValuesChange={this.handleChangeInput} layout='vertical'>
+                <Form onValuesChange={this.handleChangeInput} layout="vertical">
                     <Form.Item label="First Name" name="firstName">
                         <Input
                             type="text"
@@ -96,17 +102,12 @@ class Register extends React.Component {
                     <Divider />
 
                     <Button 
-                        type='primary'
+                        type="primary"
                         onClick={this.handleRegister}
                         loading={this.state.loading}>
                         Register
                     </Button>
-
                 </Form>
-
-
-                
-
             </div>
         )
     }
