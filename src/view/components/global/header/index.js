@@ -1,4 +1,5 @@
 import { Layout, Button, Typography, Space } from "antd"
+import UserProfile from "../../shared/UserProfile"
 import './index.css'
 const Header = () => {
     return(
@@ -15,6 +16,8 @@ const Header = () => {
                     <Button>
                         Registration
                     </Button>
+                    
+                    <UserProfile />
                 </Space>
             </Layout.Header>
     )
