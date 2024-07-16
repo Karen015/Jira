@@ -1,46 +1,46 @@
-import React from "react";
-import { Input, Typography, Button, Divider, Form, notification } from 'antd';
-import { auth } from "../../../../services/firebase/firebase";
-import { signInWithEmailAndPassword } from 'firebase/auth'
+import React from 'react';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../../../services/firebase/firebase';
+import { Typography, Input, Button, Divider, Form, notification } from 'antd';
 
-const { Title } = Typography
-
+const { Title } = Typography;
 class Login extends React.Component {
     constructor() {
-        super() 
-        this.state = { 
+        super();
+        this.state = {
             email: '',
             password: '',
             loading: false
         }
     }
 
-    
     handleFormChange = (value) => {
         this.setState(value);
-    }
-    
+    };
+
     handleLogin = async () => {
-        const { email, password } = this.state
-        try {
-            this.setState({
-                loading: true
-            })
-    
-            const response = await signInWithEmailAndPassword(auth, email, password)
-            console.log(response)
-        } catch(error) {
-            console.log(error, '>>>>>>>>>>>>>>')
-        } finally {
+        this.setState({
+            loading: true
+        });
+
+        const { email, password } = this.state;
+        try{
+            const response = await signInWithEmailAndPassword(auth, email, password);
+            console.log(response, 'response');
+        }catch(error) {
+            console.log(error, '>>>>>>');
+
+        }finally{
             this.setState({
                 loading: false
-            })
+            });
         }
 
-        
+
     }
+    
     render() {
-        return(
+        return (
             <div className="auth_container">
                 <Title level={3}>
                     Login
@@ -48,23 +48,26 @@ class Login extends React.Component {
 
                 <Form onValuesChange={this.handleFormChange}>
                     <Form.Item name="email">
-                        <Input
+                        <Input 
                             type="text"
                             placeholder="Email"
                         />
                     </Form.Item>
 
                     <Form.Item name="password">
-                        <Input
+                        <Input 
                             type="password"
                             placeholder="Password"
                         />
                     </Form.Item>
 
+                    <Divider />
+                    
                     <Button 
                         type="primary"
                         loading={this.state.loading}
-                        onClick={this.handleLogin}>
+                        onClick={this.handleLogin}
+                    >
                         Login
                     </Button>
                 </Form>
@@ -73,5 +76,4 @@ class Login extends React.Component {
     }
 }
 
-
-export default Login
+export default Login;

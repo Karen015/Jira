@@ -1,116 +1,134 @@
 import React from 'react';
-import { Input, Typography, Button, Divider, Form, notification } from 'antd';
+import { Typography, Input, Button, Divider, Form, notification } from 'antd';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, setDoc, doc, db } from '../../../../services/firebase/firebase';
+
+
 import './index.css';
 
 const { Title } = Typography;
+
+// createUserWithEmailAndPassword()
 class Register extends React.Component {
     constructor() {
         super();
         this.state = {
             loading: false,
-            firstnName: '',
+            firstName: '',
             lastName: '',
             email: '',
             password: '',
             headline: ''
         }
 
-        this.handleRegister = this.handleRegister.bind(this)
+        this.handleRegister = this.handleRegister.bind(this);
     }
 
     handleChangeInput = value => {
-        this.setState(value); 
+       this.setState(value)
     }
-
-    async handleRegister(e) {
-        const { email, password, firstName, lastName, headline } = this.state
+    
+    async handleRegister() {
+        const { email, password, firstName, lastName, headline } = this.state; 
         this.setState({
             loading: true
+        });
+
+       try{
+        const response = await createUserWithEmailAndPassword(auth, email, password);
+
+        const uid = response.user.uid; 
+        
+        const createDoc = doc(db, 'registerUsers', uid);
+        setDoc(createDoc, {
+            firstName, lastName, headline, email
         })
         
-        try {
-            const response = await createUserWithEmailAndPassword(auth, email, password)
-
-            const uid = response.user.uid;
-
-            const createDoc = doc(db, 'registerUsers', uid) 
-            setDoc(createDoc, {
-                firstName, lastName, headline
-            })
-
-            console.log(response)
-            notification.success({
-                message: 'Success Registration',
-                description: `Welcome dear ${firstName} ${lastName}`
-            })
-        } catch(error) { 
+        notification.success({
+            message: 'Success Registration',
+            description: `Welcome dear ${firstName} ${lastName}`
+        })
+       } catch(error) {
             notification.error({
-                message: 'Oooops',
-                description: `Something Went Wrong ${error}`
+                message: 'Wrong Registration',
+                description: `Ooooops :(`
             })
-        } finally {
+       } finally {
             this.setState({
                 loading: false
-            })
-        }
+            });
+       }
     }
+
+
+
     render() {
         return (
             <div className="auth_container">
                 <Title level={2}>
                     Register
                 </Title>
-               
-                <Form onValuesChange={this.handleChangeInput} layout="vertical">
+
+                <Form layout='vertical' onValuesChange={this.handleChangeInput}>
                     <Form.Item label="First Name" name="firstName">
-                        <Input
+                        <Input 
                             type="text"
                             placeholder="First Name"
                         />
                     </Form.Item>
-                    
-                    <Form.Item label="Last Name"  name="lastName">
-                        <Input
+
+                    <Form.Item label="Last Name" name="lastName">
+                        <Input 
                             type="text"
                             placeholder="Last Name"
                         />
                     </Form.Item>
 
                     <Form.Item label="Headline" name="headline">
-                        <Input
+                        <Input 
                             type="text"
                             placeholder="Headline"
                         />
                     </Form.Item>
 
                     <Form.Item label="Email" name="email">
-                        <Input
-                            type="text"
+                        <Input 
+                            type="email"
                             placeholder="Email"
                         />
                     </Form.Item>
 
                     <Form.Item label="Password" name="password">
-                        <Input
+                        <Input 
                             type="password"
-                            placeholder="password"
+                            placeholder="Password"
                         />
                     </Form.Item>
-                    
+
                     <Divider />
 
-                    <Button 
-                        type="primary"
+                    <Button
+                        type="primary" 
                         onClick={this.handleRegister}
-                        loading={this.state.loading}>
+                        loading={this.state.loading}
+                    >
                         Register
                     </Button>
                 </Form>
+               
+
             </div>
         )
     }
 }
 
-export default Register
+export default Register;
+
+
+
+
+
+
+
+
+

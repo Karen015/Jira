@@ -1,59 +1,72 @@
-
 import { Avatar, Dropdown, Typography, Flex, Divider } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
+import { signOut } from 'firebase/auth';
+import { auth } from '../../../../services/firebase/firebase';
+import { getFirstLetters } from '../../../../core/helpers/getFirstLetters';
 
-const { Text } = Typography
+const { Text } = Typography;
 
-const user = {
-    firstName: 'Davit',
-    lastName: 'Sargsyan',
-    headline: 'front end developer',
-    email: 'karen.aghajanyan.11@gmail.com',
-    logOut: ''
 
-}
 
-const items = [
-    {
-        key: '',
-        label: (
-            <Flex vertical align='center'>
-                <Avatar 
-                    size={64} 
-                    icon={<UserOutlined />}
-                />
+const UserProfile = ({ userProfileInfo }) => {
+    const { firstName, lastName, headline, email } = userProfileInfo;
 
-                <Text>
-                    Karen Aghajanyan
-                </Text>
-
-                <Text underline>
-                    karen.aghajanyan.11@gmail.com
-                </Text>
-            </Flex>
-        )
-    },
-    {
-        key: 'logout',
-        label: 'Logout'
+    const handleLogout = async () => {
+        try {
+            await signOut(auth);
+        } catch(e) {
+            console.log(e, 'error')
+        }
     }
-]
 
-const UserProfile = () => {
+    const items = [
+        {
+            key: 'profile',
+            label: (
+                <Flex vertical justify="center" align="center">
+                    <Avatar 
+                        size={64}
+                        icon={<UserOutlined />}
+                    />
+    
+                    <Text>
+                        {firstName} {lastName}
+                    </Text>
+    
+                    <Text underline>
+                        {email}
+                    </Text>
+
+                    <Text type="secondary">
+                        {headline}
+                    </Text>
+    
+                    <Divider />
+                </Flex>
+            )
+        },
+        {
+            key: 'logout',
+            label: (
+                <Text onClick={handleLogout}>
+                    Logout
+                </Text>
+            )
+        }
+    ]
+
     return (
-        <Dropdown   
+        <Dropdown 
             menu={{
                 items
             }}
         >
-
-            <Avatar size={"large"}>
-                KA
+            <Avatar size="large">
+                {getFirstLetters(`${firstName} ${lastName}`)}
             </Avatar>
-
-
         </Dropdown>
     )
-}
+};
 
-export default UserProfile
+export default UserProfile;
+

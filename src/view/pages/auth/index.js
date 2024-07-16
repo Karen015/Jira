@@ -4,32 +4,32 @@ import Register from './register';
 import Login from './login';
 import './index.css';
 
+
 const items = [
     {
         label: 'Register',
-        key: 'register',
+        key: 'regsiter',
         children: <Register />
     },
     {
         label: 'Login',
-        key: 'Login',
-        children: <Login />  
+        key: 'login',
+        children: <Login />
     }
-]
-
+];
 
 class Auth extends React.Component {
     constructor() {
-        super()
+        super();
         this.state = {
 
         }
     }
-    
+
     render() {
-        return( 
+        return (
             <div className="auth_container">
-                <Tabs items={items} defaultActiveKey="login" />
+                <Tabs  items={items} defaultActiveKey="login" />
             </div>
         )
     }
