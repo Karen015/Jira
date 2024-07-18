@@ -1,9 +1,12 @@
 import React from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../../../services/firebase/firebase';
-import { Typography, Input, Button, Divider, Form, notification } from 'antd';
+import { Typography, Input, Button, Divider, Form, Flex } from 'antd';
+import AuthWrapper from '../../../components/shared/AuthWrapper';
+import LoginCoverImg from '../../../../core/images/loginCover.png'
+import { Link } from 'react-router-dom';
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 class Login extends React.Component {
     constructor() {
         super();
@@ -26,7 +29,6 @@ class Login extends React.Component {
         const { email, password } = this.state;
         try{
             const response = await signInWithEmailAndPassword(auth, email, password);
-            console.log(response, 'response');
         }catch(error) {
             console.log(error, '>>>>>>');
 
@@ -41,21 +43,21 @@ class Login extends React.Component {
     
     render() {
         return (
-            <div className="auth_container">
+            <AuthWrapper coverImg={LoginCoverImg}>
                 <Title level={3}>
-                    Login
+                    Sign In
                 </Title>
 
-                <Form onValuesChange={this.handleFormChange}>
-                    <Form.Item name="email">
-                        <Input 
+                <Form onValuesChange={this.handleFormChange} layout='vertical'>
+                    <Form.Item name="email" label="Email">
+                        <Input
                             type="text"
                             placeholder="Email"
                         />
                     </Form.Item>
 
-                    <Form.Item name="password">
-                        <Input 
+                    <Form.Item name="password" label="Password">
+                        <Input.Password
                             type="password"
                             placeholder="Password"
                         />
@@ -63,15 +65,25 @@ class Login extends React.Component {
 
                     <Divider />
                     
-                    <Button 
-                        type="primary"
-                        loading={this.state.loading}
-                        onClick={this.handleLogin}
-                    >
-                        Login
-                    </Button>
+                    <Flex justify='space-between'>
+                    
+                        <Text>
+                            <Link to="/register">
+                                Create Account
+                            </Link>
+                        </Text>
+                        
+                        <Button 
+                            type="primary"
+                            loading={this.state.loading}
+                            onClick={this.handleLogin}
+                        >
+                            Login
+                        </Button>
+                    </Flex>
+                    
                 </Form>
-            </div>
+            </AuthWrapper>
         )
     }
 }

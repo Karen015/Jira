@@ -1,8 +1,10 @@
 import React from 'react';
-import { Typography, Input, Button, Divider, Form, notification } from 'antd';
+import { Typography, Input, Button, Divider, Form, notification, Flex } from 'antd';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, setDoc, doc, db } from '../../../../services/firebase/firebase';
-
+import AuthWrapper from '../../../components/shared/AuthWrapper';
+import registerCoverImg from '../../../../core/images/registerCover.png'
+import { Link } from 'react-router-dom';
 
 import './index.css';
 
@@ -64,9 +66,9 @@ class Register extends React.Component {
 
     render() {
         return (
-            <div className="auth_container">
-                <Title level={2}>
-                    Register
+            <AuthWrapper coverImg={registerCoverImg}>
+                <Title level={3}>
+                    Registration
                 </Title>
 
                 <Form layout='vertical' onValuesChange={this.handleChangeInput}>
@@ -99,7 +101,7 @@ class Register extends React.Component {
                     </Form.Item>
 
                     <Form.Item label="Password" name="password">
-                        <Input 
+                        <Input.Password
                             type="password"
                             placeholder="Password"
                         />
@@ -107,17 +109,23 @@ class Register extends React.Component {
 
                     <Divider />
 
-                    <Button
-                        type="primary" 
-                        onClick={this.handleRegister}
-                        loading={this.state.loading}
-                    >
-                        Register
-                    </Button>
+                    <Flex justify="space-between" align="flex-end">
+                        <Link to="/logIn">
+                            Sign In
+                        </Link>
+                        <Button
+                            type="primary" 
+                            onClick={this.handleRegister}
+                            loading={this.state.loading}
+                        >
+                            Register
+                        </Button>
+                    </Flex>
+                    
                 </Form>
                
 
-            </div>
+            </AuthWrapper>
         )
     }
 }

@@ -1,10 +1,25 @@
-import Header from '../../components/global/header'
-import './index.css'
+import { Menu } from 'antd';
+import { DatabaseOutlined } from '@ant-design/icons';
+import './index.css';
+
+const items = [
+    {
+        key: 'board',
+        label: 'Cabinet Board',
+        icon: <DatabaseOutlined />
+    }
+]
 
 const CabinetLayout = () => {
     return (
         <div className='cabinet_layout_container'>
+            <Menu 
+                items={items}
+                mode="inline"
+            />
+            <main>
 
+            </main>
         </div>
     )
 }
