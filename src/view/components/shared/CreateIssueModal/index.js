@@ -17,6 +17,7 @@ const CreateIssueModal = ({ visible, setVisible }) => {
 
     const handleCloseModal = () => {
         setVisible(false);
+        form.resetFields()
     }
 
     const handleCreateIssue = async (values) => {
@@ -66,16 +67,9 @@ const CreateIssueModal = ({ visible, setVisible }) => {
                   />
                 </Form.Item>
 
-                <Form.Item 
-                    name="description"
-                    label="Description"
-                    rules={[{required: true, message: 'Please Input Description!'}]}
-                >
-                    <Input.TextArea 
-                        placeholder="Description"
-                    />
-                    {/* <Editor /> */}
-                </Form.Item>
+            
+                <Editor /> 
+            
 
                 <Form.Item
                     name="priority"
