@@ -1,24 +1,13 @@
-// export const getFirstLetters = (fullName) => {
-//     const splitNames = fullName.trim().split(' ');
-//     let firstLetters = '';
-
-//     splitNames.forEach((i) => {
-//         firstLetters += i[0]
-//     })
-
-//     return firstLetters.toUpperCase()
-    
-// }
-
-
 export const getFirstLetters = (fullName) => {
     const splitNames = fullName.trim().split(' ');
-    let firstLetters = '';
 
-    splitNames.forEach((i) => {
-        firstLetters += i[0]
-    })
+    if (splitNames.length >= 2) {
+        const firstLetter = splitNames[0][0].toUpperCase();
 
-    return firstLetters.toUpperCase()
-    
-}
+        const lastLetter = splitNames[1][0].toUpperCase();
+
+        return `${firstLetter} ${lastLetter}`
+    }
+};
+
+

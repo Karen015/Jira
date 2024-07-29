@@ -1,5 +1,6 @@
 import React from 'react';
 
+
 class Cabinet extends React.Component {
     render() {
         return (
@@ -9,5 +10,5 @@ class Cabinet extends React.Component {
         )
     }
 };
- 
-export default Cabinet
+
+export default Cabinet;

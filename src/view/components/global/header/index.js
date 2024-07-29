@@ -7,11 +7,12 @@ const Header = ({ isAuth, userProfileInfo }) => {
    
     return (
         <Layout.Header className="main_header">
-        <Link to="/">
-            <Typography.Title level={3}>
-                Jira
-            </Typography.Title>
-        </Link>
+            <Link to="/">
+                <Typography.Title level={3}>
+                    Jira
+                </Typography.Title>
+            </Link>
+           
             <Space>
                 {
                     isAuth ? (

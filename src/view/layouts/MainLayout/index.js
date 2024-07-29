@@ -1,18 +1,18 @@
-import Header from '../../components/global/Header';
 import { Outlet } from 'react-router-dom';
-import './index.css';
 
+import Header from '../../components/global/Header';
+import './index.css';
 
 const MainLayout = () => {
     return (
-        <div className="main_layout_container">
-            <Header />
+      <div className="main_layout_container">
+        <Header />
 
-            <main>
-                <Outlet />
-            </main>
-        </div>
+        <main>
+          <Outlet />
+        </main>
+      </div>
     )
-}
-
-export default MainLayout
+};
+  
+export default MainLayout;
