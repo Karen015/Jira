@@ -3,7 +3,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../../../services/firebase/firebase';
 import { Typography, Input, Button, Divider, Form, Flex } from 'antd';
 import AuthWrapper from '../../../components/shared/AuthWrapper';
-import LoginCoverImg from '../../../../core/images/loginCover.png'
+import LoginCoverImg from '../../../../core/images/loginCover.png';
 import { Link } from 'react-router-dom';
 
 const { Title, Text } = Typography;
@@ -29,6 +29,7 @@ class Login extends React.Component {
         const { email, password } = this.state;
         try{
             const response = await signInWithEmailAndPassword(auth, email, password);
+            console.log(response, 'response');
         }catch(error) {
             console.log(error, '>>>>>>');
 
@@ -37,8 +38,6 @@ class Login extends React.Component {
                 loading: false
             });
         }
-
-
     }
     
     render() {
@@ -48,9 +47,9 @@ class Login extends React.Component {
                     Sign In
                 </Title>
 
-                <Form onValuesChange={this.handleFormChange} layout='vertical'>
+                <Form onValuesChange={this.handleFormChange} layout="vertical">
                     <Form.Item name="email" label="Email">
-                        <Input
+                        <Input 
                             type="text"
                             placeholder="Email"
                         />
@@ -58,21 +57,19 @@ class Login extends React.Component {
 
                     <Form.Item name="password" label="Password">
                         <Input.Password
-                            type="password"
                             placeholder="Password"
                         />
                     </Form.Item>
 
                     <Divider />
                     
-                    <Flex justify='space-between'>
-                    
-                        <Text>
+                    <Flex justify="space-between" align="flex-end">
+                        <Text underline>
                             <Link to="/register">
                                 Create Account
                             </Link>
                         </Text>
-                        
+
                         <Button 
                             type="primary"
                             loading={this.state.loading}

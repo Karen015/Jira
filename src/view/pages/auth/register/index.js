@@ -3,12 +3,12 @@ import { Typography, Input, Button, Divider, Form, notification, Flex } from 'an
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, setDoc, doc, db } from '../../../../services/firebase/firebase';
 import AuthWrapper from '../../../components/shared/AuthWrapper';
-import registerCoverImg from '../../../../core/images/registerCover.png'
+import registerCoverImg from '../../../../core/images/registerCover.png';
 import { Link } from 'react-router-dom';
 
 import './index.css';
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 // createUserWithEmailAndPassword()
 class Register extends React.Component {
@@ -67,8 +67,8 @@ class Register extends React.Component {
     render() {
         return (
             <AuthWrapper coverImg={registerCoverImg}>
-                <Title level={3}>
-                    Registration
+                <Title level={2}>
+                    Register
                 </Title>
 
                 <Form layout='vertical' onValuesChange={this.handleChangeInput}>
@@ -102,7 +102,6 @@ class Register extends React.Component {
 
                     <Form.Item label="Password" name="password">
                         <Input.Password
-                            type="password"
                             placeholder="Password"
                         />
                     </Form.Item>
@@ -110,9 +109,12 @@ class Register extends React.Component {
                     <Divider />
 
                     <Flex justify="space-between" align="flex-end">
-                        <Link to="/logIn">
-                            Sign In
-                        </Link>
+                        <Text underline>
+                            <Link to="/login">
+                                Sign In
+                            </Link>
+                        </Text>
+                     
                         <Button
                             type="primary" 
                             onClick={this.handleRegister}
@@ -121,10 +123,7 @@ class Register extends React.Component {
                             Register
                         </Button>
                     </Flex>
-                    
                 </Form>
-               
-
             </AuthWrapper>
         )
     }

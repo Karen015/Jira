@@ -1,2 +1,2 @@
-export { default as MainLayout } from './MainLayout'
-export { default as CabinetLayout } from './CabinetLayout'
+export { default as MainLayout } from './MainLayout';
+export { default as CabinetLayout } from './CabinetLayout';
