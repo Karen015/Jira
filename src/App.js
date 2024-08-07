@@ -1,13 +1,15 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { MainLayout, CabinetLayout } from './view/layouts';
 import { Login, Register } from './view/pages/auth';
 import LoadingWrapper from './view/components/shared/LoadingWrapper';
 import { db, auth, doc, getDoc, onAuthStateChanged } from './services/firebase/firebase';
+import { AuthContextProvider } from './context/AuthContext';
 import {  
   Route, 
   RouterProvider,
   createBrowserRouter, 
   createRoutesFromElements,
+  redirect
 } from 'react-router-dom';
 import './App.css';
 
@@ -24,65 +26,61 @@ const route = createBrowserRouter(
   )
 )
 
-class App extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      loading: false,
-      isAuth: false,
-      userProfileInfo: {
-        firstName: '',
-        lastName: '',
-        headline: '',
-        email: ''
-      },
-    }
+const lo = [
+  {
+    path: '/login',
+    isAuth: false
+  },
+  {
+    path: '/register',
+    isAuth: false
+  },
+  {
+    path: '/cabinet',
+    isAuth: true
   }
+]
 
+const App = () => {
+  const [isAuth, setIsAuth] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [userProfileInfo, setUserProfileInfo] = useState({
+    firstName: '',
+    lastName: '',
+    headline: '',
+    email: ''
+  });
 
-  componentDidMount() { 
-    this.setState({
-      loading: true
-    });
-    
-    onAuthStateChanged(auth, (user) => { 
-      this.setState({
-        loading: false
-      });
+  useEffect(() => {
+    setLoading(true)
 
-      if (user) {
-          this.setState({
-            isAuth: true
-          });
+    onAuthStateChanged(auth, (user) => {          
+      setLoading(false);
 
-          const { uid } = user;
-          const ref = doc(db, 'registerUsers', uid);
+      if (user) {         
+        setIsAuth(true);
+        const { uid } = user;
+        const ref = doc(db, 'registerUsers', uid);
 
-          getDoc(ref).then((userData) => {
-            if (userData.exists()) {
-              this.setState({
-                userProfileInfo: userData.data() 
-              })
-            }
-          })
+        getDoc(ref).then((userData) => {
+          if (userData.exists()) {
+            setUserProfileInfo(userData.data())
+          }
+        })
       } else {
-
+        redirect('/login')
       }
-
     })
-  }
+  }, [])
 
-  render() {
-    const { userProfileInfo, loading, isAuth } = this.state;
-
-    return (
-      <LoadingWrapper loading={loading} fullScreen>
+  return (
+    <LoadingWrapper loading={loading} fullScreen>
+      <AuthContextProvider value={{ isAuth, userProfileInfo, setIsAuth}}>
         <RouterProvider router={route}/>
-      </LoadingWrapper>
-    )
-  }
+      </AuthContextProvider>
+    </LoadingWrapper>
+  )
 }
-
 
 export default App;
 
