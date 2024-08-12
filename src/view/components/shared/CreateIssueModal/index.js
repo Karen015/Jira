@@ -1,33 +1,38 @@
 import { useState } from 'react';
-import { Modal, Form, Input, Select } from 'antd';
-import { issueTypes, priority } from '../../../../core/constants/issue';
+import { Modal, Form, Input, Select, notification } from 'antd';
+import { issueTypes, priority, taskStatus } from '../../../../core/constants/issue';
 import Editor from '../Editor';
 import { doc, setDoc, db } from '../../../../services/firebase/firebase';
 
-// save button click
-// check form required
-// ??????? form data get
-// all ok backend call fetch
-// loading true
-// 
-const CreateIssueModal = ({ visible, setVisible }) => {
+const CreateIssueModal = ({ visible, setVisible, users }) => {
     const [ form ] = Form.useForm();
-
     const [confirmLoading, setConfirmLoading] = useState(false);
 
     const handleCloseModal = () => {
         setVisible(false);
-        form.resetFields()
+        form.resetFields();
     }
 
     const handleCreateIssue = async (values) => {
         setConfirmLoading(true);
+        const taskDataModel = {
+            status: taskStatus.TODO,
+            ...values
+        }
+
+        console.log(taskDataModel, '>>>>>')
         try{
             const createDoc = doc(db, 'issue', `${Date.now()}`);
-            await setDoc(createDoc, values);
+            await setDoc(createDoc, taskDataModel);
             setVisible(false);
+            notification.success({
+                message: `Your task has been created`,
+            })
         }catch(error) {
-
+            notification.error({
+                message: `${error}`,
+                description: ''
+            })
         }finally{
             setConfirmLoading(false);
         }
@@ -68,8 +73,37 @@ const CreateIssueModal = ({ visible, setVisible }) => {
                 </Form.Item>
 
             
-                <Editor /> 
-            
+                <Form.Item 
+                    name="description"
+                    label="Description"
+                    rules={[{required:true, message: 'Please Input Description!'}]}
+                >
+                    <Editor /> 
+                </Form.Item>
+
+                <Form.Item
+                    name="reporter"
+                    label="Reporter"
+                    rules={[{required: true, message: 'Please Select Reporter!'}]}
+                >
+                    <Select 
+                        showSearch
+                        placeholder="reporter"
+                        options={users}
+                    />
+                </Form.Item>
+
+                <Form.Item
+                    name="assigner"
+                    label="Assigner"
+                    rules={[{required: true, message: 'Please Select Assigner!'}]}
+                >
+                    <Select 
+                        showSearch
+                        placeholder="Priority"
+                        options={users}
+                    />
+                </Form.Item>
 
                 <Form.Item
                     name="priority"
@@ -88,3 +122,5 @@ const CreateIssueModal = ({ visible, setVisible }) => {
 };
 
 export default CreateIssueModal;
+
+
