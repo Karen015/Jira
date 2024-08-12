@@ -21,7 +21,6 @@ const SubHeader = () => {
             setUsers(result);
             console.log(result);
         }
-
         handleGetUsersData();
     }, []);
 

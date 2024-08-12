@@ -7,13 +7,13 @@ import { AuthContextProvider } from './context/AuthContext';
 import {  
   Route, 
   RouterProvider,
-  createBrowserRouter, 
+  createHashRouter, 
   createRoutesFromElements,
   redirect
 } from 'react-router-dom';
 import './App.css';
 
-const route = createBrowserRouter(
+const route = createHashRouter(
   createRoutesFromElements(
     <Route path="/" element={<MainLayout />}>
         <Route path="login" element={<Login />}/>
@@ -25,21 +25,6 @@ const route = createBrowserRouter(
     </Route>
   )
 )
-
-const lo = [
-  {
-    path: '/login',
-    isAuth: false
-  },
-  {
-    path: '/register',
-    isAuth: false
-  },
-  {
-    path: '/cabinet',
-    isAuth: true
-  }
-]
 
 const App = () => {
   const [isAuth, setIsAuth] = useState(false);
@@ -53,7 +38,6 @@ const App = () => {
 
   useEffect(() => {
     setLoading(true)
-
     onAuthStateChanged(auth, (user) => {          
       setLoading(false);
 
