@@ -26,21 +26,6 @@ const route = createBrowserRouter(
   )
 )
 
-const lo = [
-  {
-    path: '/login',
-    isAuth: false
-  },
-  {
-    path: '/register',
-    isAuth: false
-  },
-  {
-    path: '/cabinet',
-    isAuth: true
-  }
-]
-
 const App = () => {
   const [isAuth, setIsAuth] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -53,7 +38,6 @@ const App = () => {
 
   useEffect(() => {
     setLoading(true)
-
     onAuthStateChanged(auth, (user) => {          
       setLoading(false);
 

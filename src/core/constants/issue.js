@@ -36,8 +36,6 @@ const priority = [
     }
 ]
 
-
-
 const taskStatus = {
     TODO: '0',
     IN_PROGRESS: '1',

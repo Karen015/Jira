@@ -20,7 +20,6 @@ const CreateIssueModal = ({ visible, setVisible, users }) => {
             ...values
         }
 
-        console.log(taskDataModel, '>>>>>')
         try{
             const createDoc = doc(db, 'issue', `${Date.now()}`);
             await setDoc(createDoc, taskDataModel);

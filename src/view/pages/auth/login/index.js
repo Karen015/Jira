@@ -45,7 +45,6 @@ const Login = () => {
                         }
                     ]}
                 >
-                    
                     <Input 
                         type="text"
                         placeholder="Email"
@@ -85,11 +84,8 @@ const Login = () => {
                         Login
                     </Button>
                 </Flex>
-                
             </Form>
         </AuthWrapper>
     )
 }
-
 export default Login;
-
