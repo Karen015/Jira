@@ -62,7 +62,7 @@ const App = () => {
                   />
                   <Route 
                     path={ROUTES_CONSTANTS.REGISTER} 
-                    element={!isAuth ? <Register /> : <Navigate to={ROUTES_CONSTANTS.CABINET}/>}
+                    element={!isAuth ? <Register /> : <Navigate to={ROUTES_CONSTANTS.REGISTER}/>}
                   />
 
                   {/* ------ Cabinet Layout Route ------ */}
@@ -82,3 +82,6 @@ const App = () => {
 };
 
 export default App;
+
+
+

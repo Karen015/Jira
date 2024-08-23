@@ -5,32 +5,35 @@ import { auth, setDoc, doc, db } from '../../../../services/firebase/firebase';
 import AuthWrapper from '../../../components/shared/AuthWrapper';
 import registerCoverImg from '../../../../core/images/registerCover.png';
 import { Link, useNavigate } from 'react-router-dom';
+import { ROUTES_CONSTANTS } from '../../../../routes';
+
 import './index.css';
 
 const { Title, Text } = Typography;
 
 const Register = () => {
     const [ form ] = Form.useForm();
-    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const [ loading, setLoading ] = useState(false);
+
     const handleRegister = async (values) => {
-        setLoading(true)
+        setLoading(true);
         try {
             const { email, password, ...restData } = values;
-            const response = await createUserWithEmailAndPassword(auth, email, password)
+            const response = await createUserWithEmailAndPassword(auth, email, password);
             const uid = response.user.uid;
-            const createDoc = doc(db, 'registerUsers', uid)
+            const createDoc = doc(db, 'registerUsers', uid);
             await setDoc(createDoc, {
                 email, ...restData
-            })
-            navigate('/login')
-        } catch(error) {
+            });
+            navigate(ROUTES_CONSTANTS.LOGIN);
+        }catch{
             notification.error({
-                message: `${error}`,
-                description: ''
+                message: 'Wrong Registration',
+                description: `Ooooops :(`
             })
-        } finally {
-            setLoading(false)
+        }finally{
+            setLoading(false);
         }
     }
 
@@ -41,9 +44,9 @@ const Register = () => {
             </Title>
 
             <Form form={form} onFinish={handleRegister} layout="vertical">
-                <Form.Item 
-                    label="First Name" 
+                <Form.Item
                     name="firstName"
+                    label="First Name"
                     rules={[
                         {
                             required: true,
@@ -58,8 +61,8 @@ const Register = () => {
                 </Form.Item>
 
                 <Form.Item 
-                    label="Last Name" 
                     name="lastName"
+                    label="Last Name" 
                     rules={[
                         {
                             required: true,
@@ -74,8 +77,8 @@ const Register = () => {
                 </Form.Item>
 
                 <Form.Item 
-                    label="Headline" 
                     name="headline"
+                    label="Headline" 
                     rules={[
                         {
                             required: true,
@@ -90,8 +93,8 @@ const Register = () => {
                 </Form.Item>
 
                 <Form.Item 
+                    name="email"
                     label="Email" 
-                    name="email" 
                     rules={[
                         {
                             required: true,
@@ -106,8 +109,8 @@ const Register = () => {
                 </Form.Item>
 
                 <Form.Item 
-                    label="Password" 
                     name="password"
+                    label="Password" 
                     rules={[
                         {
                             required: true,
@@ -124,11 +127,11 @@ const Register = () => {
 
                 <Flex justify="space-between" align="flex-end">
                     <Text underline>
-                        <Link to="/login">
+                        <Link to={ROUTES_CONSTANTS.LOGIN}>
                             Sign In
                         </Link>
                     </Text>
-                    
+                
                     <Button
                         type="primary" 
                         loading={loading}
@@ -140,6 +143,15 @@ const Register = () => {
             </Form>
         </AuthWrapper>
     )
-}
+};
 
 export default Register;
+
+
+
+
+
+
+
+
+
