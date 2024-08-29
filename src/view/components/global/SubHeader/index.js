@@ -1,4 +1,4 @@
-import { useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import { Input, Avatar, Button, Divider } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import CreateIssueModal from '../../shared/CreateIssueModal';
@@ -7,8 +7,8 @@ import { getFirstLetters } from '../../../../core/helpers/getFirstLetters';
 import './index.css';
 
 const SubHeader = () => {
-    const [modalVisible, setModalVisible] = useState(false);
     const [users, setUsers] = useState([]);
+    const [modalVisible, setModalVisible] = useState(false);
     
     useEffect(() => {
         const handleGetUsersData = async () => {
@@ -16,11 +16,11 @@ const SubHeader = () => {
             const result = queryData.docs.map((doc) => {
                 const { firstName, lastName } = doc.data();
                 return {label: `${firstName} ${lastName}`, value: doc.id}
-                
-            })
+            });
+
             setUsers(result);
-            console.log(result);
         }
+    
         handleGetUsersData();
     }, []);
 
@@ -47,13 +47,15 @@ const SubHeader = () => {
                     }
                 }}
             >
-                {users.map((user) => {
-                    return (
-                        <Avatar>
-                            {getFirstLetters(`${user.label}`)}
-                        </Avatar>
-                    )
-                })}
+                {
+                    users.map((user) => {
+                        return (
+                            <Avatar style={{backgroundColor: 'green'}}>
+                                {getFirstLetters(`${user.label}`)}
+                            </Avatar>
+                        )
+                    })
+                }
             </Avatar.Group>
 
             <Divider type="vertical"/>

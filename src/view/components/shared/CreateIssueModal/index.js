@@ -1,12 +1,21 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Modal, Form, Input, Select, notification } from 'antd';
 import { issueTypes, priority, taskStatus } from '../../../../core/constants/issue';
 import Editor from '../Editor';
-import { doc, setDoc, db } from '../../../../services/firebase/firebase';
+import { doc, setDoc, db, updateDoc, arrayUnion } from '../../../../services/firebase/firebase';
+import { AuthContext } from '../../../../context/AuthContext';
 
-const CreateIssueModal = ({ visible, setVisible, users }) => {
+const CreateIssueModal = ({ visible, setVisible, users }) => { //render
     const [ form ] = Form.useForm();
+    const { handleGetIssues } = useContext(AuthContext)
     const [confirmLoading, setConfirmLoading] = useState(false);
+
+    const handleUpdateAssigneesTask = async (taskId, assignerId) => {
+        const docRef = doc(db, 'registerUsers', assignerId);
+        await updateDoc(docRef, {
+            task: arrayUnion(taskId)
+        })
+    };
 
     const handleCloseModal = () => {
         setVisible(false);
@@ -14,24 +23,30 @@ const CreateIssueModal = ({ visible, setVisible, users }) => {
     }
 
     const handleCreateIssue = async (values) => {
+        const taskId = `${Date.now()}`;
         setConfirmLoading(true);
+
         const taskDataModel = {
-            status: taskStatus.TODO,
+            key: taskId,
+            status: taskStatus.TODO.key,
             ...values
         }
-
+     
         try{
-            const createDoc = doc(db, 'issue', `${Date.now()}`);
+            const createDoc = doc(db, 'issue', taskId);
             await setDoc(createDoc, taskDataModel);
-            setVisible(false);
+            await handleUpdateAssigneesTask(taskId, values.assignees)
+            handleGetIssues()
             notification.success({
-                message: `Your task has been created`,
-            })
+                message: 'Your task has been created',
+            });
+
+            setVisible(false);
+            form.resetFields();
         }catch(error) {
             notification.error({
-                message: `${error}`,
-                description: ''
-            })
+                message: `${error}Error ooops :(`,
+            });
         }finally{
             setConfirmLoading(false);
         }
@@ -47,6 +62,13 @@ const CreateIssueModal = ({ visible, setVisible, users }) => {
             confirmLoading={confirmLoading}
             onCancel={handleCloseModal}
             onOk={form.submit}
+            styles={{
+                body: {
+                    maxHeight: '600px',
+                    overflowY: 'auto',
+                    overflowX: 'hidden'
+                }
+            }}
         >
             <Form layout="vertical" form={form} onFinish={handleCreateIssue}>
                 <Form.Item
@@ -57,8 +79,17 @@ const CreateIssueModal = ({ visible, setVisible, users }) => {
                     <Select 
                         showSearch
                         placeholder="Issue Type"
-                        options={issueTypes}
-                    />
+                    >
+                        {issueTypes.map((item) => {
+                            return (
+                                <Select.Option value={item.value}>
+                                    {item.icon}
+                                    {' '}
+                                    {item.label}
+                                </Select.Option>
+                            )
+                        })}
+                    </Select>
                 </Form.Item>
 
                 <Form.Item
@@ -71,13 +102,12 @@ const CreateIssueModal = ({ visible, setVisible, users }) => {
                   />
                 </Form.Item>
 
-            
                 <Form.Item 
                     name="description"
                     label="Description"
-                    rules={[{required:true, message: 'Please Input Description!'}]}
+                    rules={[{required: true, message: 'Please Input Description!'}]}
                 >
-                    <Editor /> 
+                    <Editor />
                 </Form.Item>
 
                 <Form.Item
@@ -87,19 +117,19 @@ const CreateIssueModal = ({ visible, setVisible, users }) => {
                 >
                     <Select 
                         showSearch
-                        placeholder="reporter"
+                        placeholder="Reporter"
                         options={users}
                     />
                 </Form.Item>
 
                 <Form.Item
-                    name="assigner"
-                    label="Assigner"
-                    rules={[{required: true, message: 'Please Select Assigner!'}]}
+                    name="assignees"
+                    label="Assignees"
+                    rules={[{required: true, message: 'Please Select Assignees!'}]}
                 >
                     <Select 
                         showSearch
-                        placeholder="Priority"
+                        placeholder="Assignees"
                         options={users}
                     />
                 </Form.Item>
@@ -112,8 +142,20 @@ const CreateIssueModal = ({ visible, setVisible, users }) => {
                     <Select 
                         showSearch
                         placeholder="Priority"
-                        options={priority}
-                    />
+                    >
+                        {
+                            priority.map((item) => {
+                                return (
+                                    <Select.Option value={item.value}>
+                                        {item.icon} 
+                                        {' '}
+                                        {item.label}
+                                    </Select.Option>
+                                )
+
+                            })
+                        }
+                    </Select>
                 </Form.Item>
             </Form>   
         </Modal>
@@ -121,5 +163,3 @@ const CreateIssueModal = ({ visible, setVisible, users }) => {
 };
 
 export default CreateIssueModal;
-
-

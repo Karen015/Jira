@@ -25,5 +25,17 @@
     padding: 18px;
     user-select: none;
     box-shadow: 0 0 12px #ccc;
+    background-color: white;
+    transition: 0.3;
     border-radius: 6px;
+}
+.issue_card_container:hover {
+    background-color: #ccc;
+}
+.droppable_container {
+    padding: 5px 10px 5px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 500px;
 }
