@@ -1,18 +1,18 @@
-import React, { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import { db, updateDoc, doc } from '../../../services/firebase/firebase';
 import { Typography, Flex} from 'antd';
 import LoadingWrapper from '../../components/shared/LoadingWrapper';
-import './index.css';
 import { AuthContext } from '../../../context/AuthContext';
 import { ISSUE_OPTION, PRIORITY_OPTION } from '../../../core/constants/issue';
+import EditIssueModal from '../../components/shared/EditIssueModal';
+import './index.css';
 
 const { Title, Text } = Typography;
 
 const CabinetBoard = () => {
-    
     const {columns, setColumns, issuesLoading, handleGetIssues} = useContext(AuthContext)    
-
+    const [selectedIssueData, setSelectedIssueData] = useState(null)
     useEffect(() => {
         handleGetIssues()
     }, [])   
@@ -113,6 +113,7 @@ const CabinetBoard = () => {
                                                                             (provided) => {
                                                                                 return (
                                                                                     <div
+                                                                                        onClick={() => setSelectedIssueData(item)}
                                                                                         className="issue_card_container"
                                                                                         ref={provided.innerRef}
                                                                                         {...provided.draggableProps}
@@ -156,7 +157,18 @@ const CabinetBoard = () => {
                     }
                 </DragDropContext>
             </LoadingWrapper>
+            {
+                Boolean(selectedIssueData) && (
+                    <EditIssueModal 
+                        issueData={selectedIssueData}
+                        visible={Boolean(selectedIssueData)} 
+                        onClose={() => setSelectedIssueData(null)}                
+                    />
+                )
+            }
+            
         </div>
+
     )
 };
 

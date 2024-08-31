@@ -6,7 +6,7 @@ import LoadingWrapper from './view/components/shared/LoadingWrapper';
 import { db, auth, doc, getDoc, getDocs, collection, onAuthStateChanged } from './services/firebase/firebase';
 import { AuthContextProvider } from './context/AuthContext';
 import { ROUTES_CONSTANTS } from './routes';
-import { taskStatusModel } from './view/pages/cabinetBoard/constants'; //TODO
+import { taskStatusModel } from './view/pages/cabinetBoard/constants'; //TODO Next Redux
 import {  
   Route, 
   Navigate,
@@ -21,8 +21,9 @@ import './App.css';
 const App = () => {
   const [isAuth, setIsAuth] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [columns, setColumns] = useState(taskStatusModel) //TODO
-  const [issuesLoading, setIssuesLoading] = useState(false) //TODO
+  const [users, setUsers] = useState([]); //TODO Next Redux
+  const [columns, setColumns] = useState(taskStatusModel) //TODO Next Redux
+  const [issuesLoading, setIssuesLoading] = useState(false) //TODO Next Redux
   const updatedTaskStatusModel = taskStatusModel()
 
   const [userProfileInfo, setUserProfileInfo] = useState({
@@ -31,6 +32,20 @@ const App = () => {
     headline: '',
     email: ''
   });
+
+  useEffect(() => {
+    const handleGetUsersData = async () => {
+        const queryData = await getDocs(collection(db, 'registerUsers'));
+        const result = queryData.docs.map((doc) => {
+            const { firstName, lastName } = doc.data();
+            return {label: `${firstName} ${lastName}`, value: doc.id}
+        });
+
+        setUsers(result);
+    }
+
+    handleGetUsersData();
+  }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -55,7 +70,7 @@ const App = () => {
   }, [])
 
   
-  const handleGetIssues = async () => { //TODO
+  const handleGetIssues = async () => { //TODO Next Redux
     setIssuesLoading(true)
     const queryData = await getDocs(collection(db, 'issue'));
     queryData.docs.map(doc => {
@@ -71,7 +86,16 @@ const App = () => {
   }
   return (
     <LoadingWrapper loading={loading} fullScreen>
-      <AuthContextProvider value={{ isAuth, userProfileInfo, setIsAuth, columns, setColumns, handleGetIssues, issuesLoading}}>
+      <AuthContextProvider value={{ 
+        isAuth, 
+        userProfileInfo, 
+        setIsAuth, 
+        columns, 
+        setColumns, 
+        handleGetIssues, 
+        issuesLoading,
+        users
+      }}>
         <RouterProvider router={
           createBrowserRouter(
             createRoutesFromElements(

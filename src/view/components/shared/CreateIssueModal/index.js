@@ -4,11 +4,14 @@ import { issueTypes, priority, taskStatus } from '../../../../core/constants/iss
 import Editor from '../Editor';
 import { doc, setDoc, db, updateDoc, arrayUnion } from '../../../../services/firebase/firebase';
 import { AuthContext } from '../../../../context/AuthContext';
+import IssueModalForm from '../IssueModalForm';
 
-const CreateIssueModal = ({ visible, setVisible, users }) => { //render
+
+const CreateIssueModal = ({ visible, setVisible }) => { //render
     const [ form ] = Form.useForm();
     const { handleGetIssues } = useContext(AuthContext)
     const [confirmLoading, setConfirmLoading] = useState(false);
+    
 
     const handleUpdateAssigneesTask = async (taskId, assignerId) => {
         const docRef = doc(db, 'registerUsers', assignerId);
@@ -54,8 +57,8 @@ const CreateIssueModal = ({ visible, setVisible, users }) => { //render
 
     return (
         <Modal
-            title="Create issue"
-            okText="Create issue"
+            title="Create Issue"
+            okText="Create Issue"
             centered
             open={visible}
             width={800}
@@ -64,100 +67,17 @@ const CreateIssueModal = ({ visible, setVisible, users }) => { //render
             onOk={form.submit}
             styles={{
                 body: {
-                    maxHeight: '600px',
+                    maxHeight: '550px',
                     overflowY: 'auto',
-                    overflowX: 'hidden'
+                    overflowX: 'hidden',
+                    padding: 10
                 }
             }}
         >
-            <Form layout="vertical" form={form} onFinish={handleCreateIssue}>
-                <Form.Item
-                    name="issueType"
-                    label="Issue Type"
-                    rules={[{required: true, message: 'Please Select Issue Type!'}]}
-                >
-                    <Select 
-                        showSearch
-                        placeholder="Issue Type"
-                    >
-                        {issueTypes.map((item) => {
-                            return (
-                                <Select.Option value={item.value}>
-                                    {item.icon}
-                                    {' '}
-                                    {item.label}
-                                </Select.Option>
-                            )
-                        })}
-                    </Select>
-                </Form.Item>
-
-                <Form.Item
-                    name="shortSummary"
-                    label="Short Summary"
-                    rules={[{required: true, message: 'Please Input Issue Short Summary!'}]}
-                >
-                  <Input 
-                    placeholder="Short Summary"
-                  />
-                </Form.Item>
-
-                <Form.Item 
-                    name="description"
-                    label="Description"
-                    rules={[{required: true, message: 'Please Input Description!'}]}
-                >
-                    <Editor />
-                </Form.Item>
-
-                <Form.Item
-                    name="reporter"
-                    label="Reporter"
-                    rules={[{required: true, message: 'Please Select Reporter!'}]}
-                >
-                    <Select 
-                        showSearch
-                        placeholder="Reporter"
-                        options={users}
-                    />
-                </Form.Item>
-
-                <Form.Item
-                    name="assignees"
-                    label="Assignees"
-                    rules={[{required: true, message: 'Please Select Assignees!'}]}
-                >
-                    <Select 
-                        showSearch
-                        placeholder="Assignees"
-                        options={users}
-                    />
-                </Form.Item>
-
-                <Form.Item
-                    name="priority"
-                    label="Priority"
-                    rules={[{required: true, message: 'Please Select Priority!'}]}
-                >
-                    <Select 
-                        showSearch
-                        placeholder="Priority"
-                    >
-                        {
-                            priority.map((item) => {
-                                return (
-                                    <Select.Option value={item.value}>
-                                        {item.icon} 
-                                        {' '}
-                                        {item.label}
-                                    </Select.Option>
-                                )
-
-                            })
-                        }
-                    </Select>
-                </Form.Item>
-            </Form>   
+            <IssueModalForm
+                form={form}
+                onFinish={handleCreateIssue}
+            />
         </Modal>
     )
 };
