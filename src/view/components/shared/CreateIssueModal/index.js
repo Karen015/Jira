@@ -1,13 +1,12 @@
 import { useContext, useState } from 'react';
-import { Modal, Form, Input, Select, notification } from 'antd';
-import { issueTypes, priority, taskStatus } from '../../../../core/constants/issue';
-import Editor from '../Editor';
+import { Modal, Form, notification } from 'antd';
+import { taskStatus } from '../../../../core/constants/issue';
 import { doc, setDoc, db, updateDoc, arrayUnion } from '../../../../services/firebase/firebase';
 import { AuthContext } from '../../../../context/AuthContext';
 import IssueModalForm from '../IssueModalForm';
 
 
-const CreateIssueModal = ({ visible, setVisible }) => { //render
+const CreateIssueModal = ({ visible, setVisible }) => {
     const [ form ] = Form.useForm();
     const { handleGetIssues } = useContext(AuthContext)
     const [confirmLoading, setConfirmLoading] = useState(false);

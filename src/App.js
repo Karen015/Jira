@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { MainLayout, CabinetLayout } from './view/layouts';
 import { Login, Register } from './view/pages/auth';
 import CabinetBoard from './view/pages/cabinetBoard';
@@ -16,8 +16,6 @@ import {
 } from 'react-router-dom';
 import './App.css';
 
-
-
 const App = () => {
   const [isAuth, setIsAuth] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -34,6 +32,7 @@ const App = () => {
   });
 
   useEffect(() => {
+    
     const handleGetUsersData = async () => {
         const queryData = await getDocs(collection(db, 'registerUsers'));
         const result = queryData.docs.map((doc) => {
@@ -70,20 +69,19 @@ const App = () => {
   }, [])
 
   
-  const handleGetIssues = async () => { //TODO Next Redux
+  const handleGetIssues = useCallback(async () => { //TODO Next Redux
     setIssuesLoading(true)
     const queryData = await getDocs(collection(db, 'issue'));
-    queryData.docs.map(doc => {
+    queryData.docs.forEach(doc => {
         const data = doc.data()
         const { status } = data;
         if(updatedTaskStatusModel[status]) {
             updatedTaskStatusModel[status].items.push(data)
-            console.log(updatedTaskStatusModel)
         }
     })
     setColumns({...updatedTaskStatusModel});
     setIssuesLoading(false)
-  }
+  }, [updatedTaskStatusModel])
   return (
     <LoadingWrapper loading={loading} fullScreen>
       <AuthContextProvider value={{ 

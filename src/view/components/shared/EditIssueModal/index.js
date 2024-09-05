@@ -1,22 +1,22 @@
 import { useContext, useEffect, useState} from 'react';
-import { Modal, Form, Input, Select, notification, Typography, Space } from 'antd';
-import { ISSUE_OPTION } from '../../../../core/constants/issue';
+import { Modal, Form, notification, Typography, Space } from 'antd';
+import { ISSUE_OPTION } from '../../../../core/constants/issue'; 
 import { doc, updateDoc, db } from '../../../../services/firebase/firebase';
 import IssueModalForm from '../IssueModalForm';
 import { AuthContext } from '../../../../context/AuthContext';
 const { Text } = Typography
 const EditIssueModal = ({ visible, onClose, issueData }) => {
     const [ form ] = Form.useForm();
-    const [confirmLoading, setConfirmLoading] = useState(false)
-    const { handleGetIssues } = useContext(AuthContext)
+    const [confirmLoading, setConfirmLoading] = useState(false);
+    const { handleGetIssues } = useContext(AuthContext);
     const handleClose = () => {
         onClose();
     }
 
     useEffect(() => {
-        const { key, index, ...restData} = issueData
+        const { key, ...restData} = issueData
         form.setFieldsValue(restData)
-    })
+    }, [issueData, form])
 
     const handleEditForm = async values => {
         setConfirmLoading(true)
