@@ -22,7 +22,6 @@ const App = () => {
   const [users, setUsers] = useState([]); //TODO Next Redux
   const [columns, setColumns] = useState(taskStatusModel) //TODO Next Redux
   const [issuesLoading, setIssuesLoading] = useState(false) //TODO Next Redux
-  const updatedTaskStatusModel = taskStatusModel()
 
   const [userProfileInfo, setUserProfileInfo] = useState({
     firstName: '',
@@ -71,6 +70,7 @@ const App = () => {
   
   const handleGetIssues = useCallback(async () => { //TODO Next Redux
     setIssuesLoading(true)
+    const updatedTaskStatusModel = taskStatusModel()
     const queryData = await getDocs(collection(db, 'issue'));
     queryData.docs.forEach(doc => {
         const data = doc.data()
