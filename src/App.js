@@ -81,7 +81,7 @@ const App = () => {
     })
     setColumns({...updatedTaskStatusModel});
     setIssuesLoading(false)
-  }, [updatedTaskStatusModel])
+  }, []);                     
   return (
     <LoadingWrapper loading={loading} fullScreen>
       <AuthContextProvider value={{ 
