@@ -17,4 +17,4 @@ export const taskStatusModel = () => ({
         name: taskStatus.DONE.title,
         items: []
     }
-})
+});

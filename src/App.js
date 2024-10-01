@@ -5,8 +5,8 @@ import CabinetBoard from './view/pages/cabinetBoard';
 import LoadingWrapper from './view/components/shared/LoadingWrapper';
 import { db, auth, doc, getDoc, getDocs, collection, onAuthStateChanged } from './services/firebase/firebase';
 import { AuthContextProvider } from './context/AuthContext';
+import { taskStatusModel } from './view/pages/cabinetBoard/constants'; //Todo
 import { ROUTES_CONSTANTS } from './routes';
-import { taskStatusModel } from './view/pages/cabinetBoard/constants'; //TODO Next Redux
 import {  
   Route, 
   Navigate,
@@ -15,15 +15,16 @@ import {
   createRoutesFromElements,
 } from 'react-router-dom';
 import './App.css';
+import { store } from './state-managment/store';
+import { Provider } from 'react-redux';
 
 const App = () => {
   const [isAuth, setIsAuth] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [users, setUsers] = useState([]); //TODO Next Redux
-  const [columns, setColumns] = useState(taskStatusModel) //TODO Next Redux
-  const [issuesLoading, setIssuesLoading] = useState(false) //TODO Next Redux
-
-  const [userProfileInfo, setUserProfileInfo] = useState({
+  const [users, setUsers] = useState([]); //Todo Next Redux
+  const [columns, setColumns] = useState(taskStatusModel); //Todo Next Redux
+  const [issuesLoading, setIssuesLoading] = useState(false); //Todo Next Redux
+  const [userProfileInfo, setUserProfileInfo] = useState({ //Todo Next Redux
     firstName: '',
     lastName: '',
     headline: '',
@@ -31,7 +32,6 @@ const App = () => {
   });
 
   useEffect(() => {
-    
     const handleGetUsersData = async () => {
         const queryData = await getDocs(collection(db, 'registerUsers'));
         const result = queryData.docs.map((doc) => {
@@ -43,7 +43,8 @@ const App = () => {
     }
 
     handleGetUsersData();
-  }, []);
+}, []);
+
 
   useEffect(() => {
     setLoading(true);
@@ -67,63 +68,70 @@ const App = () => {
     })
   }, [])
 
-  
-  const handleGetIssues = useCallback(async () => { //TODO Next Redux
-    setIssuesLoading(true)
-    const updatedTaskStatusModel = taskStatusModel()
-    const queryData = await getDocs(collection(db, 'issue'));
+  const handleGetIssues = useCallback(async () => { //Todo
+    setIssuesLoading(true);
+    const updatedTaskStatusModel = taskStatusModel();
+    const queryData = await getDocs(collection(db, 'issue')); 
     queryData.docs.forEach(doc => {
-        const data = doc.data()
+        const data = doc.data();
         const { status } = data;
-        if(updatedTaskStatusModel[status]) {
+
+        if (updatedTaskStatusModel[status]) {
             updatedTaskStatusModel[status].items.push(data)
-        }
-    })
+        };
+
+    });
+
+    setIssuesLoading(false);
     setColumns({...updatedTaskStatusModel});
-    setIssuesLoading(false)
-  }, []);                     
+  }, []);
+
   return (
     <LoadingWrapper loading={loading} fullScreen>
-      <AuthContextProvider value={{ 
-        isAuth, 
-        userProfileInfo, 
-        setIsAuth, 
-        columns, 
-        setColumns, 
-        handleGetIssues, 
-        issuesLoading,
-        users
-      }}>
-        <RouterProvider router={
-          createBrowserRouter(
-            createRoutesFromElements(
-              <Route path="/" element={<MainLayout />}>
-                  <Route 
-                    path={ROUTES_CONSTANTS.LOGIN} 
-                    element={!isAuth ? <Login /> : <Navigate to={ROUTES_CONSTANTS.CABINET}/>}
-                  />
-                  <Route 
-                    path={ROUTES_CONSTANTS.REGISTER} 
-                    element={!isAuth ? <Register /> : <Navigate to={ROUTES_CONSTANTS.REGISTER}/>}
-                  />
+      <Provider store={store}>
+        <AuthContextProvider value={{ 
+          isAuth,
+          userProfileInfo, 
+          setIsAuth, 
+          columns,  
+          setColumns, 
+          issuesLoading, 
+          handleGetIssues,
+          users
+        }}>
+          <RouterProvider router={
+            createBrowserRouter(
+              createRoutesFromElements(
+                <Route path="/" element={<MainLayout />}>
+                    <Route 
+                      path={ROUTES_CONSTANTS.LOGIN} 
+                      element={!isAuth ? <Login /> : <Navigate to={ROUTES_CONSTANTS.CABINET}/>}
+                    />
+                    <Route 
+                      path={ROUTES_CONSTANTS.REGISTER} 
+                      element={!isAuth ? <Register /> : <Navigate to={ROUTES_CONSTANTS.REGISTER}/>}
+                    />
 
-                  {/* ------ Cabinet Layout Route ------ */}
-                  <Route 
-                    path={ROUTES_CONSTANTS.CABINET} 
-                    element={isAuth ? <CabinetLayout /> : <Navigate to={ROUTES_CONSTANTS.LOGIN}/>} 
-                  >
-                    <Route path={ROUTES_CONSTANTS.CABINET} element={<CabinetBoard />}/>
-                  </Route>
-              </Route>
+                    {/* ------ Cabinet Layout Route ------ */}
+                    <Route 
+                      path={ROUTES_CONSTANTS.CABINET} 
+                      element={isAuth ? <CabinetLayout /> : <Navigate to={ROUTES_CONSTANTS.LOGIN}/>} 
+                    >
+                      <Route path={ROUTES_CONSTANTS.CABINET} element={<CabinetBoard />}/>
+                    </Route>
+                </Route>
+              )
             )
-          )
-        }/>
-      </AuthContextProvider>
+          }/>
+        </AuthContextProvider>
+      </Provider>
     </LoadingWrapper>
   )
 };
 
 export default App;
+
+
 
 
 

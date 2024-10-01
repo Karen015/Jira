@@ -1,50 +1,56 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useContext, useState } from 'react';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import { db, updateDoc, doc } from '../../../services/firebase/firebase';
-import { Typography, Flex} from 'antd';
 import LoadingWrapper from '../../components/shared/LoadingWrapper';
+import { Typography, Flex } from 'antd';
 import { AuthContext } from '../../../context/AuthContext';
-import { ISSUE_OPTION, PRIORITY_OPTION } from '../../../core/constants/issue';
 import EditIssueModal from '../../components/shared/EditIssueModal';
+import { ISSUE_OPTION, PRIORITY_OPTION } from '../../../core/constants/issue';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchData } from '../../../state-managment/reducers/issuesSlice';
 import './index.css';
 
 const { Title, Text } = Typography;
 
+
 const CabinetBoard = () => {
-    const {columns, setColumns, issuesLoading, handleGetIssues} = useContext(AuthContext)    
-    const [selectedIssueData, setSelectedIssueData] = useState(null)
+    const { issuesLoading, setColumns } = useContext(AuthContext)
+    const [ selectedIssueData, setSelectedIssueData ] = useState(null);
+    const dispatch = useDispatch();
+
+    const columns = useSelector(state => state.issues.issueColumns);
+
     useEffect(() => {
-        handleGetIssues()
-    }, [handleGetIssues])   
-
+        dispatch(fetchData());
+    },[])
     const handleDragEnd = result => {
-        const {source, destination} = result
-        const sourceColumn = columns[source.droppableId]
-        const destColumn = columns[destination.droppableId]
-        const sourceItem = [...sourceColumn.items]
-        const destItem = [...destColumn.items]
+        const { source, destination } = result;
+        const sourceColumn = columns[source.droppableId];
+        const destColumn = columns[destination.droppableId];
 
-        const [removed] = sourceItem.splice(source.index, 1)
-        destItem.splice(destination.index, 0, removed)
+        const sourceItems = [...sourceColumn.items];
+        const destItems = [...destColumn.items]; 
 
-        if(source.droppableId !== destination.droppableId) {
+        const [removed] = sourceItems.splice(source.index, 1);
+        destItems.splice(destination.index, 0, removed);
+
+        if (source.droppableId !== destination.droppableId) {
             setColumns({
                 ...columns,
                 [source.droppableId]: {
                     ...sourceColumn,
-                    items: sourceItem
+                    items: sourceItems
                 },
                 [destination.droppableId]: {
                     ...destColumn,
-                    items: destItem
+                    items: destItems
                 }
             })
         } else {
             const sourceColumn = columns[source.droppableId];
             const sourceColumnItems = sourceColumn.items;
-            const [removed] = sourceColumnItems.splice(source.index, 1)
-            sourceColumnItems.splice(destination.index, 0, removed)
-
+            const [removed] = sourceColumnItems.splice(source.index, 1);
+            sourceColumnItems.splice(destination.index, 0, removed);
             setColumns({
                 ...columns,
                 [source.droppableId]: {
@@ -53,52 +59,51 @@ const CabinetBoard = () => {
                 }
             })
         }
-    }
+    };                      
 
-    const handleChangeTaskStatus = async result => {
+    const handleChangeTaskStatus = async result => { 
         if (result.destination) {
-            try {
-            
-                handleDragEnd(result)
-                const {destination: { droppableId, index }, draggableId } = result
-                const docRef = doc(db, 'issue', draggableId)
+            try{
+                handleDragEnd(result);
+                const { destination: { droppableId, index }, draggableId } = result;
+
+                const docRef = doc(db, 'issue', draggableId);
                 await updateDoc(docRef, {
                     status: droppableId,
                     index
                 });
             }catch {
-    
+                console.log('error')
             }
         }
     }
-    
+
     return (
         <div className="drag_context_container">
-            <LoadingWrapper loading={issuesLoading}>
+        <LoadingWrapper loading={issuesLoading}>
                 <DragDropContext onDragEnd={handleChangeTaskStatus}>
                     {
                         Object.entries(columns).map(([columnId, column]) => {
                             return (
                                 <div className="column_container" key={columnId}>
-                                    <div className="column_header">
+                                <div className="column_header">
                                         <Title level={5} type="secondary">
                                             {column.name}
                                             {' '}
                                             {column.items.length}
                                         </Title>
-                                    </div>
+                                </div>
 
                                     <div>
                                         <Droppable droppableId={columnId} key={columnId}> 
-                                            {(provided) => {
+                                            {(provided, snapshot) => {
                                                 return (
                                                     <div
                                                         {...provided.droppableProps}
                                                         ref={provided.innerRef}
                                                         className="droppable_container"
                                                         style={{
-                                                            padding: 6,
-                                                            minHeight: 450,
+                                                            backgroundColor: snapshot.isDraggingOver ? 'lightblue' : '#f4f5f7'
                                                         }}
                                                     >
                                                         {
@@ -108,9 +113,10 @@ const CabinetBoard = () => {
                                                                         key={item.key}
                                                                         draggableId={item.key} 
                                                                         index={index} 
+                                                                       
                                                                     >
                                                                         {
-                                                                            (provided) => {
+                                                                            (provided, snapshot) => {
                                                                                 return (
                                                                                     <div
                                                                                         onClick={() => setSelectedIssueData(item)}
@@ -119,20 +125,21 @@ const CabinetBoard = () => {
                                                                                         {...provided.draggableProps}
                                                                                         {...provided.dragHandleProps}
                                                                                         style={{
+                                                                                            backgroundColor: snapshot.isDragging ?  '#ebecf0' : '#fff',
                                                                                             ...provided.draggableProps.style,
                                                                                         }}
                                                                                     >
                                                                                         <Text>
                                                                                             {item.shortSummary}
                                                                                         </Text>
-                                                                                                                                                                    
-                                                                                        <Flex>
+
+                                                                                        <Flex justify="space-between">
                                                                                             <div>
                                                                                                 {ISSUE_OPTION[item.issueType].icon}
                                                                                                 {' '}
                                                                                                 {PRIORITY_OPTION[item.priority].icon}
                                                                                             </div>
-                                                                                            
+
                                                                                             <div>
 
                                                                                             </div>
@@ -157,18 +164,18 @@ const CabinetBoard = () => {
                     }
                 </DragDropContext>
             </LoadingWrapper>
+
             {
                 Boolean(selectedIssueData) && (
                     <EditIssueModal 
                         issueData={selectedIssueData}
-                        visible={Boolean(selectedIssueData)} 
-                        onClose={() => setSelectedIssueData(null)}                
+                        visible={Boolean(selectedIssueData)}
+                        onClose={() => setSelectedIssueData(null)}
                     />
                 )
             }
-            
+      
         </div>
-
     )
 };
 

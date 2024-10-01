@@ -1,24 +1,23 @@
-import { 
-    ArrowDownOutlined,
-    ArrowUpOutlined, 
+import {
     BugOutlined, 
-    CheckSquareOutlined, 
-    FlagOutlined 
+    FlagOutlined, 
+    ArrowUpOutlined, 
+    ArrowDownOutlined, 
+    CheckSquareOutlined,
 } from '@ant-design/icons';
 
 const ISSUE_OPTION = {
     bug: {
-        icon : <BugOutlined style={{color: "#e44d42"}} />,
+        icon: <BugOutlined style={{color: '#e44d42'}}/>,
         label: 'Bug'
     },
     task: {
-        icon : <CheckSquareOutlined style={{color: "#4fade6"}} />,
+        icon: <CheckSquareOutlined style={{color: '#4fade6'}}/>,
         label: 'Task'
-
     },
     story: {
-        icon : <FlagOutlined style={{color: "#65ba43"}} />,
-        label: 'Story'
+        icon: <FlagOutlined style={{color: '#65ba43'}}/>,
+        label: 'story'
     }
 }
 
@@ -32,46 +31,43 @@ const issueTypes = [
         value: 'task',
         label: ISSUE_OPTION.task.label,
         icon: ISSUE_OPTION.task.icon
-
     },
     {
         value: 'story',
         label: ISSUE_OPTION.story.label,
         icon: ISSUE_OPTION.story.icon
-
     },
 ];
 
+
 const PRIORITY_OPTION = {
-    highest: {
-        icon: <ArrowUpOutlined style={{color: 'darkred'}} />        
-    },
     high: {
         icon: <ArrowUpOutlined style={{color: 'red'}} />
     },
+    highest: {
+        icon: <ArrowUpOutlined style={{color: 'red'}} />
+    },
     medium: {
-        icon: <ArrowUpOutlined style={{color: 'orange'}} />
+        icon: <ArrowUpOutlined style={{color: 'orange'}}/>
     },
     low: {
-        icon: <ArrowDownOutlined style={{color: 'yellowgreen'}} />
+        icon: <ArrowDownOutlined style={{color: 'green'}}/>
     },
     lowest: {
-        icon: <ArrowDownOutlined  style={{color: 'green'}}/>
+        icon: <ArrowDownOutlined style={{color: 'green'}}/>
     }
 }
 
-
-
 const priority = [
-    {
-        value: 'highest',
-        label: 'Highest',
-        icon: PRIORITY_OPTION.highest.icon
-    },
     {
         value: 'high',
         label: 'High',
         icon: PRIORITY_OPTION.high.icon
+    },
+    {
+        value: 'highest',
+        label: 'Highest',
+        icon: PRIORITY_OPTION.highest.icon
     },
     {
         value: 'medium',
@@ -106,10 +102,9 @@ const taskStatus = {
     DONE: {
         key: '3',
         title: 'Done'
-    }
+    },
 }
 
 export {
     issueTypes, priority, taskStatus, ISSUE_OPTION, PRIORITY_OPTION
 }
-

@@ -1,16 +1,14 @@
-import { useContext, useState } from 'react';
+import { useState, useContext } from 'react';
 import { Modal, Form, notification } from 'antd';
 import { taskStatus } from '../../../../core/constants/issue';
 import { doc, setDoc, db, updateDoc, arrayUnion } from '../../../../services/firebase/firebase';
 import { AuthContext } from '../../../../context/AuthContext';
 import IssueModalForm from '../IssueModalForm';
 
-
-const CreateIssueModal = ({ visible, setVisible }) => {
+const CreateIssueModal = ({ visible, setVisible }) => { //render
     const [ form ] = Form.useForm();
-    const { handleGetIssues } = useContext(AuthContext)
+    const { handleGetIssues } = useContext(AuthContext);
     const [confirmLoading, setConfirmLoading] = useState(false);
-    
 
     const handleUpdateAssigneesTask = async (taskId, assignerId) => {
         const docRef = doc(db, 'registerUsers', assignerId);
@@ -37,8 +35,8 @@ const CreateIssueModal = ({ visible, setVisible }) => {
         try{
             const createDoc = doc(db, 'issue', taskId);
             await setDoc(createDoc, taskDataModel);
-            await handleUpdateAssigneesTask(taskId, values.assignees)
-            handleGetIssues()
+            await handleUpdateAssigneesTask(taskId, values.assignees);
+            handleGetIssues();
             notification.success({
                 message: 'Your task has been created',
             });
@@ -47,7 +45,7 @@ const CreateIssueModal = ({ visible, setVisible }) => {
             form.resetFields();
         }catch(error) {
             notification.error({
-                message: `${error}Error ooops :(`,
+                message: 'Error ooops :(',
             });
         }finally{
             setConfirmLoading(false);
@@ -56,8 +54,8 @@ const CreateIssueModal = ({ visible, setVisible }) => {
 
     return (
         <Modal
-            title="Create Issue"
-            okText="Create Issue"
+            title="Create issue"
+            okText="Create issue"
             centered
             open={visible}
             width={800}
@@ -66,14 +64,13 @@ const CreateIssueModal = ({ visible, setVisible }) => {
             onOk={form.submit}
             styles={{
                 body: {
-                    maxHeight: '550px',
+                    maxHeight: '600px',
                     overflowY: 'auto',
-                    overflowX: 'hidden',
-                    padding: 10
+                    overflowX: 'hidden'
                 }
             }}
         >
-            <IssueModalForm
+            <IssueModalForm 
                 form={form}
                 onFinish={handleCreateIssue}
             />
