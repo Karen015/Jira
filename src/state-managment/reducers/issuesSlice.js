@@ -1,16 +1,14 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-// import { taskStatusModel } from 'src/view/pages/cabinetBoard/constants';
-// import { collection, db, getDocs } from 'src/services/firebase/firebase';
 import { taskStatusModel } from '../../view/pages/cabinetBoard/constants';
 import { collection, db, getDocs } from '../../services/firebase/firebase';
 
 const initialState = {
-    issueColumns: [],
+    issueColumns: {},
     count: 0,
     loading: false
 }
 
-export const fetchData = createAsyncThunk(
+export const fetchIssueData = createAsyncThunk(
   'data/fetchData',
   async () => {
       const updatedTaskStatusModel = taskStatusModel();
@@ -33,28 +31,57 @@ const issuesSlice = createSlice({
     name: 'issues',
     initialState,
     reducers: {
-        increment: (state) => {
-            console.log(state.count, 'increment')
-            state.count = state.count + 1;
-        },
+      changeIssueColumns: (state, action) => {
+        const columns = state.issueColumns;
+        const { source, destination } = action.payload
+        const sourceColumn = columns[source.droppableId];
+        const destColumn = columns[destination.droppableId];
+        const sourceItems = [...sourceColumn.items];
+        const destItems = [...destColumn.items]; 
+        const [removed] = sourceItems.splice(source.index, 1);
+        destItems.splice(destination.index, 0, removed)
+        
+        let changedColumns = {}
+        if (source.droppableId !== destination.droppableId) {
+            changedColumns = {
+                ...columns,
+                [source.droppableId]: {
+                    ...sourceColumn,
+                    items: sourceItems
+                },
+                [destination.droppableId]: {
+                    ...destColumn,
+                    items: destItems
+                }
+            }
+        } else {
+            const sourceColumn = columns[source.droppableId];
+            const sourceColumnItems = sourceColumn.items;
+            const [removed] = sourceColumnItems.splice(source.index, 1);
+            sourceColumnItems.splice(destination.index, 0, removed);
+            changedColumns = {
+                ...columns,
+                [source.droppableId]: {
+                    ...sourceColumn,
+                    items: sourceColumnItems
+                }
+            }
+        }
+        state.issueColumns = changedColumns
+        console.log(changedColumns);
+      }
 
-        decrement: (state) => {
-            state.count = state.count - 1;
-        },
     },
     extraReducers: (promise) => {
-        promise.addCase(fetchData.pending, (state) => {
+        promise.addCase(fetchIssueData.pending, (state) => {
             state.loading = true
         })
-          .addCase(fetchData.fulfilled, (state, action) => {
-              console.log(action, 'action')
+          .addCase(fetchIssueData.fulfilled, (state, action) => {
               state.loading = false;
               state.issueColumns = action.payload
           })
     }
 });
 
-export const { increment, decrement } = issuesSlice.actions;
+export const { changeIssueColumns } = issuesSlice.actions;
 export default issuesSlice.reducer;
-
-
