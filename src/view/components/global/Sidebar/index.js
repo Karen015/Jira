@@ -1,6 +1,6 @@
 import { Menu } from 'antd';
 import { DatabaseOutlined, SettingOutlined, TeamOutlined } from '@ant-design/icons'
-import './index.css'
+import './index.css';
 
 const items = [
     {
@@ -21,16 +21,17 @@ const items = [
 ];
 
 const Sidebar = () => {
+
     return (
         <div className="sidebar">
-            <Menu 
+            <Menu
                 className="project_sidebar"
-                theme="light"
                 items={items}
                 mode="inline"
             />
         </div>
     )
 };
+
 
 export default Sidebar;

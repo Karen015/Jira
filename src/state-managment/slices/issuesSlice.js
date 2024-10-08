@@ -8,7 +8,7 @@ const initialState = {
     loading: false
 }
 
-export const fetchIssueData = createAsyncThunk(
+export const fetchIssuesData = createAsyncThunk(
   'data/fetchData',
   async () => {
       const updatedTaskStatusModel = taskStatusModel();
@@ -19,7 +19,7 @@ export const fetchIssueData = createAsyncThunk(
 
           if (updatedTaskStatusModel[status]) {
               updatedTaskStatusModel[status].items.push(data)
-          };
+          }
 
       });
 
@@ -33,50 +33,51 @@ const issuesSlice = createSlice({
     reducers: {
       changeIssueColumns: (state, action) => {
         const columns = state.issueColumns;
-        const { source, destination } = action.payload
+        const { source, destination }  = action.payload;
         const sourceColumn = columns[source.droppableId];
         const destColumn = columns[destination.droppableId];
         const sourceItems = [...sourceColumn.items];
-        const destItems = [...destColumn.items]; 
-        const [removed] = sourceItems.splice(source.index, 1);
-        destItems.splice(destination.index, 0, removed)
-        
-        let changedColumns = {}
+        const destItems = [...destColumn.items];
+        const [ removed ] = sourceItems.splice(source.index, 1);
+        destItems.splice(destination.index, 0, removed);
+
+        let changedColumns = {};
         if (source.droppableId !== destination.droppableId) {
-            changedColumns = {
-                ...columns,
-                [source.droppableId]: {
-                    ...sourceColumn,
-                    items: sourceItems
-                },
-                [destination.droppableId]: {
-                    ...destColumn,
-                    items: destItems
-                }
+          changedColumns = {
+            ...columns,
+            [source.droppableId]: {
+              ...sourceColumn,
+              items: sourceItems
+            },
+            [destination.droppableId]: {
+              ...destColumn,
+              items: destItems
             }
+          }
         } else {
-            const sourceColumn = columns[source.droppableId];
-            const sourceColumnItems = sourceColumn.items;
-            const [removed] = sourceColumnItems.splice(source.index, 1);
-            sourceColumnItems.splice(destination.index, 0, removed);
-            changedColumns = {
-                ...columns,
-                [source.droppableId]: {
-                    ...sourceColumn,
-                    items: sourceColumnItems
-                }
+          const sourceColumn = columns[source.droppableId];
+          const sourceColumnItems = sourceColumn.items;
+          const [removed] = sourceColumnItems.splice(source.index, 1);
+          sourceColumnItems.splice(destination.index, 0, removed);
+          changedColumns = {
+            ...columns,
+            [source.droppableId]: {
+              ...sourceColumn,
+              items: sourceColumnItems
             }
+          }
         }
-        state.issueColumns = changedColumns
-        console.log(changedColumns);
+
+        state.issueColumns = changedColumns;
       }
 
     },
     extraReducers: (promise) => {
-        promise.addCase(fetchIssueData.pending, (state) => {
-            state.loading = true
-        })
-          .addCase(fetchIssueData.fulfilled, (state, action) => {
+        promise
+          .addCase(fetchIssuesData.pending, (state) => {
+              state.loading = true;
+          })
+          .addCase(fetchIssuesData.fulfilled, (state, action) => {
               state.loading = false;
               state.issueColumns = action.payload
           })
@@ -85,3 +86,5 @@ const issuesSlice = createSlice({
 
 export const { changeIssueColumns } = issuesSlice.actions;
 export default issuesSlice.reducer;
+
+
