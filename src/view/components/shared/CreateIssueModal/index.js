@@ -2,14 +2,14 @@ import { useState } from 'react';
 import { Modal, Form, notification } from 'antd';
 import { taskStatus } from '../../../../core/constants/issue';
 import { doc, setDoc, db, updateDoc, arrayUnion } from '../../../../services/firebase/firebase';
-import { useDispatch } from 'react-redux';
-import { fetchIssueData } from '../../../../state-managment/reducers/issuesSlice';
 import IssueModalForm from '../IssueModalForm';
+import { fetchIssuesData } from '../../../../state-managment/slices/issuesSlice';
+import { useDispatch } from 'react-redux';
 
-const CreateIssueModal = ({ visible, setVisible }) => { 
+const CreateIssueModal = ({ visible, setVisible }) => { //render
     const [ form ] = Form.useForm();
-    const dispatch = useDispatch();
     const [confirmLoading, setConfirmLoading] = useState(false);
+    const dispatch = useDispatch();
 
     const handleUpdateAssigneesTask = async (taskId, assignerId) => {
         const docRef = doc(db, 'registerUsers', assignerId);
@@ -37,7 +37,7 @@ const CreateIssueModal = ({ visible, setVisible }) => {
             const createDoc = doc(db, 'issue', taskId);
             await setDoc(createDoc, taskDataModel);
             await handleUpdateAssigneesTask(taskId, values.assignees);
-            dispatch(fetchIssueData)
+            dispatch(fetchIssuesData());
             notification.success({
                 message: 'Your task has been created',
             });

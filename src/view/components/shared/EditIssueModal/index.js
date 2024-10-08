@@ -4,7 +4,8 @@ import { ISSUE_OPTION } from '../../../../core/constants/issue';
 import { updateDoc, doc, db } from '../../../../services/firebase/firebase';
 import IssueModalForm from '../IssueModalForm';
 import { useDispatch } from 'react-redux';
-import { fetchIssueData } from '../../../../state-managment/reducers/issuesSlice';
+import { fetchIssuesData } from '../../../../state-managment/slices/issuesSlice';
+
 const { Text } = Typography;
 
 const EditIssueModal = ({ visible, onClose, issueData }) => {
@@ -27,7 +28,7 @@ const EditIssueModal = ({ visible, onClose, issueData }) => {
         const docRef = doc(db, 'issue', issueData.key); 
         await updateDoc(docRef, values);
         handleClose();
-        dispatch(fetchIssueData());
+        dispatch(fetchIssuesData());
         notification.success({
             message: 'Your task has been updated',
         });

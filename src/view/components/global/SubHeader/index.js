@@ -1,13 +1,14 @@
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Input, Avatar, Button, Divider } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import CreateIssueModal from '../../shared/CreateIssueModal';
 import { getFirstLetters } from '../../../../core/helpers/getFirstLetters';
-import { useSelector } from 'react-redux';
 import './index.css';
 
 const SubHeader = () => {
-    const { users } = useSelector((state) => state.users)
+    const { users } = useSelector((state) => state.users);
+
     const [modalVisible, setModalVisible] = useState(false);
 
     const handleOpenModal = () => {
