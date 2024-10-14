@@ -21,7 +21,7 @@ const CabinetBoard = () => {
     useEffect(() => {
         dispatch(fetchIssuesData());
         dispatch(fetchUsersData());
-    },[]);
+    }, [dispatch]);
 
     const handleDragEnd = result => {
         dispatch(changeIssueColumns(result));

@@ -10,7 +10,7 @@ import {
   Route,
   Navigate,
   RouterProvider,
-  createBrowserRouter,
+  createHashRouter,
   createRoutesFromElements
 } from 'react-router-dom';
 
@@ -20,13 +20,13 @@ const App = () => {
 
   useEffect(() => {
     dispatch(fetchUserProfileInfo());
-  }, []);
+  }, [dispatch]);
 
   return (
     <LoadingWrapper loading={loading} fullScreen>
 
       <RouterProvider router={
-        createBrowserRouter(
+        createHashRouter(
           createRoutesFromElements(
             <Route path="/" element={<MainLayout/>}>
               <Route
